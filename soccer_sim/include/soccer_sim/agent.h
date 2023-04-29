@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TURTLESIM_TURTLE_H
-#define TURTLESIM_TURTLE_H
+#ifndef SOCCER_SIM_AGENT_H
+#define SOCCER_SIM_AGENT_H
 
 // This prevents a MOC error with versions of boost >= 1.48
 #ifndef Q_MOC_RUN  // See: https://bugreports.qt-project.org/browse/QTBUG-22829

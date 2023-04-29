@@ -30,25 +30,25 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
 set(dependencies "ament_index_cpp" "geometry_msgs" "rclcpp" "rclcpp_action" "std_msgs" "std_srvs")
 
-set(turtlesim_node_SRCS
-  src/turtlesim.cpp
-  src/turtle.cpp
+set(soccer_sim_node_SRCS
+  src/soccer_sim.cpp
+  src/agent.cpp
   src/simulation_frame.cpp
 )
-set(turtlesim_node_HDRS
+set(soccer_sim_node_HDRS
   include/soccer_sim/simulation_frame.h
 )
 
-qt5_wrap_cpp(turtlesim_node_MOCS ${turtlesim_node_HDRS})
+qt5_wrap_cpp(soccer_sim_node_MOCS ${soccer_sim_node_HDRS})
 
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 
-add_executable(turtlesim_node ${turtlesim_node_SRCS} ${turtlesim_node_MOCS})
-target_link_libraries(turtlesim_node Qt5::Widgets)
-ament_target_dependencies(turtlesim_node ${dependencies})
-target_link_libraries(turtlesim_node "${cpp_typesupport_target}")
+add_executable(soccer_sim_node ${soccer_sim_node_SRCS} ${soccer_sim_node_MOCS})
+target_link_libraries(soccer_sim_node Qt5::Widgets)
+ament_target_dependencies(soccer_sim_node ${dependencies})
+target_link_libraries(soccer_sim_node "${cpp_typesupport_target}")
 
-install(TARGETS turtlesim_node 
+install(TARGETS soccer_sim_node 
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY images

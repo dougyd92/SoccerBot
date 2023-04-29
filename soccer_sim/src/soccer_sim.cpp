@@ -36,7 +36,7 @@
 class SoccerSimApp : public QApplication
 {
 public:
-  rclcpp::Node::SharedPtr nh_;
+  rclcpp::Node::SharedPtr nh_; 
 
   explicit SoccerSimApp(int& argc, char** argv)
     : QApplication(argc, argv)

@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "soccer_sim/turtle.h"
+#include "soccer_sim/agent.h"
 
 #include <math.h>
 

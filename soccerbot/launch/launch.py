@@ -5,7 +5,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='soccer_sim', executable='turtlesim_node'),
+            package='soccer_sim', executable='soccer_sim_node'),
         ExecuteProcess(
           cmd=[[
             'ros2 service call ',

@@ -45,7 +45,7 @@
 # include <soccer_sim/srv/kill.hpp>
 # include <map>
 
-# include "turtle.h"
+# include "agent.h"
 #endif
 
 namespace soccer_sim
