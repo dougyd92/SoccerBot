@@ -41,9 +41,9 @@ static double normalizeAngle(double angle)
   return angle - (TWO_PI * std::floor((angle + PI) / (TWO_PI)));
 }
 
-Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& turtle_image, const QPointF& pos, float orient)
+Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& agent_image, const QPointF& pos, float orient)
 : nh_(nh)
-, turtle_image_(turtle_image)
+, agent_image_(agent_image)
 , pos_(pos)
 , orient_(orient)
 , lin_vel_x_(0.0)
@@ -57,7 +57,7 @@ Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QI
 
   last_command_time_ = nh_->now();
 
-  meter_ = turtle_image_.height();
+  meter_ = agent_image_.height();
 }
 
 
@@ -122,7 +122,7 @@ bool Agent::update(double dt, qreal canvas_width, qreal canvas_height)
   pos_.setX(std::min(std::max(static_cast<double>(pos_.x()), 0.0), static_cast<double>(canvas_width)));
   pos_.setY(std::min(std::max(static_cast<double>(pos_.y()), 0.0), static_cast<double>(canvas_height)));
 
-  // Publish pose of the turtle
+  // Publish pose of the agent
   auto p = std::make_unique<soccer_sim::msg::Pose>();
   p->x = pos_.x();
   p->y = canvas_height - pos_.y();
@@ -144,9 +144,9 @@ bool Agent::update(double dt, qreal canvas_width, qreal canvas_height)
 void Agent::paint(QPainter& painter)
 {
   QPointF p = pos_ * meter_;
-  p.rx() -= 0.5 * turtle_image_.width();
-  p.ry() -= 0.5 * turtle_image_.height();
-  painter.drawImage(p, turtle_image_);
+  p.rx() -= 0.5 * agent_image_.width();
+  p.ry() -= 0.5 * agent_image_.height();
+  painter.drawImage(p, agent_image_);
 }
 
 }

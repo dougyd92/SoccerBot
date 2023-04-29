@@ -75,18 +75,18 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
   nh_->declare_parameter("background_g", rclcpp::ParameterValue(DEFAULT_BG_G), background_g_descriptor);
   nh_->declare_parameter("background_b", rclcpp::ParameterValue(DEFAULT_BG_B), background_b_descriptor);
 
-  QVector<QString> turtles;
-  turtles.append("jersey_icon.png");
+  QVector<QString> agents;
+  agents.append("jersey_icon.png");
 
   QString images_path = (ament_index_cpp::get_package_share_directory("soccer_sim") + "/images/").c_str();
-  for (int i = 0; i < turtles.size(); ++i)
+  for (int i = 0; i < agents.size(); ++i)
   {
     QImage img;
-    img.load(images_path + turtles[i]);
-    turtle_images_.append(img);
+    img.load(images_path + agents[i]);
+    agent_images_.append(img);
   }
 
-  meter_ = turtle_images_[0].height();
+  meter_ = agent_images_[0].height();
 
   reset_srv_ = nh_->create_service<std_srvs::srv::Empty>("reset", std::bind(&SimulationFrame::resetCallback, this, std::placeholders::_1, std::placeholders::_2));
   spawn_srv_ = nh_->create_service<soccer_sim::srv::Spawn>("spawn", std::bind(&SimulationFrame::spawnCallback, this, std::placeholders::_1, std::placeholders::_2));
@@ -105,9 +105,9 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
   // spawn all available turtle types
   if(false)
   {
-    for(int index = 0; index < turtles.size(); ++index)
+    for(int index = 0; index < agents.size(); ++index)
     {
-      QString name = turtles[index];
+      QString name = agents[index];
       name = name.split(".").first();
       name.replace(QString("-"), QString(""));
       spawnAgent(name.toStdString(), 1.0f + 1.5f * (index % 7), 1.0f + 1.5f * (index / 7), static_cast<float>(PI) / 2.0f, index);
@@ -136,14 +136,14 @@ bool SimulationFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::Share
 
 bool SimulationFrame::killCallback(const soccer_sim::srv::Kill::Request::SharedPtr req, soccer_sim::srv::Kill::Response::SharedPtr)
 {
-  M_Agent::iterator it = turtles_.find(req->name);
-  if (it == turtles_.end())
+  M_Agent::iterator it = agents_.find(req->name);
+  if (it == agents_.end())
   {
     RCLCPP_ERROR(nh_->get_logger(), "Tried to kill turtle [%s], which does not exist", req->name.c_str());
     return false;
   }
 
-  turtles_.erase(it);
+  agents_.erase(it);
   update();
 
   return true;
@@ -159,14 +159,14 @@ void SimulationFrame::parameterEventCallback(const rcl_interfaces::msg::Paramete
   }
 }
 
-bool SimulationFrame::hasTurtle(const std::string& name)
+bool SimulationFrame::hasAgent(const std::string& name)
 {
-  return turtles_.find(name) != turtles_.end();
+  return agents_.find(name) != agents_.end();
 }
 
 std::string SimulationFrame::spawnAgent(const std::string& name, float x, float y, float angle)
 {
-  return spawnAgent(name, x, y, angle, rand() % turtle_images_.size());
+  return spawnAgent(name, x, y, angle, rand() % agent_images_.size());
 }
 
 std::string SimulationFrame::spawnAgent(const std::string& name, float x, float y, float angle, size_t index)
@@ -179,18 +179,18 @@ std::string SimulationFrame::spawnAgent(const std::string& name, float x, float 
       std::stringstream ss;
       ss << "turtle" << ++id_counter_;
       real_name = ss.str();
-    } while (hasTurtle(real_name));
+    } while (hasAgent(real_name));
   }
   else
   {
-    if (hasTurtle(real_name))
+    if (hasAgent(real_name))
     {
       return "";
     }
   }
 
-  AgentPtr t = std::make_shared<Agent>(nh_, real_name, turtle_images_[static_cast<int>(index)], QPointF(x, height_in_meters_ - y), angle);
-  turtles_[real_name] = t;
+  AgentPtr t = std::make_shared<Agent>(nh_, real_name, agent_images_[static_cast<int>(index)], QPointF(x, height_in_meters_ - y), angle);
+  agents_[real_name] = t;
   update();
 
   RCLCPP_INFO(nh_->get_logger(), "Spawning turtle [%s] at x=[%f], y=[%f], theta=[%f]", real_name.c_str(), x, y, angle);
@@ -224,8 +224,8 @@ void SimulationFrame::paintEvent(QPaintEvent*)
   QRgb background_color = qRgb(r, g, b);
   painter.fillRect(0, 0, width(), height(), background_color);
 
-  M_Agent::iterator it = turtles_.begin();
-  M_Agent::iterator end = turtles_.end();
+  M_Agent::iterator it = agents_.begin();
+  M_Agent::iterator end = agents_.end();
   for (; it != end; ++it)
   {
     it->second->paint(painter);
@@ -241,8 +241,8 @@ void SimulationFrame::updateTurtles()
   }
 
   bool modified = false;
-  M_Agent::iterator it = turtles_.begin();
-  M_Agent::iterator end = turtles_.end();
+  M_Agent::iterator it = agents_.begin();
+  M_Agent::iterator end = agents_.end();
   for (; it != end; ++it)
   {
     modified |= it->second->update(0.001 * update_timer_->interval(), width_in_meters_, height_in_meters_);
@@ -258,7 +258,7 @@ void SimulationFrame::updateTurtles()
 bool SimulationFrame::resetCallback(const std_srvs::srv::Empty::Request::SharedPtr, std_srvs::srv::Empty::Response::SharedPtr)
 {
   RCLCPP_INFO(nh_->get_logger(), "Resetting soccer_sim.");
-  turtles_.clear();
+  agents_.clear();
   id_counter_ = 0;
   return true;
 }

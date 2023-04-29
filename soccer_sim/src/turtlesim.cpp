@@ -33,19 +33,19 @@
 
 #include "soccer_sim/simulation_frame.h"
 
-class TurtleApp : public QApplication
+class SoccerSimApp : public QApplication
 {
 public:
   rclcpp::Node::SharedPtr nh_;
 
-  explicit TurtleApp(int& argc, char** argv)
+  explicit SoccerSimApp(int& argc, char** argv)
     : QApplication(argc, argv)
   {
     rclcpp::init(argc, argv);
-    nh_ = rclcpp::Node::make_shared("turtlesim");
+    nh_ = rclcpp::Node::make_shared("soccer_sim");
   }
 
-  ~TurtleApp()
+  ~SoccerSimApp()
   {
     rclcpp::shutdown();
   }
@@ -61,7 +61,7 @@ public:
 
 int main(int argc, char** argv)
 {
-  TurtleApp app(argc, argv);
+  SoccerSimApp app(argc, argv);
   return app.exec();
 }
 

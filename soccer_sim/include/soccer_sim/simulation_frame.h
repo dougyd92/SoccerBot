@@ -69,7 +69,7 @@ private slots:
 
 private:
   void updateTurtles();
-  bool hasTurtle(const std::string& name);
+  bool hasAgent(const std::string& name);
 
   bool resetCallback(const std_srvs::srv::Empty::Request::SharedPtr, std_srvs::srv::Empty::Response::SharedPtr);
   bool spawnCallback(const soccer_sim::srv::Spawn::Request::SharedPtr, soccer_sim::srv::Spawn::Response::SharedPtr);
@@ -91,10 +91,10 @@ private:
   rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr parameter_event_sub_;
 
   typedef std::map<std::string, AgentPtr> M_Agent;
-  M_Agent turtles_;
+  M_Agent agents_;
   uint32_t id_counter_;
 
-  QVector<QImage> turtle_images_;
+  QVector<QImage> agent_images_;
 
   float meter_;
   float width_in_meters_;
