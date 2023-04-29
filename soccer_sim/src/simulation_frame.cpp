@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "soccer_sim/turtle_frame.h"
+#include "soccer_sim/simulation_frame.h"
 
 #include <QPointF>
 
@@ -41,7 +41,7 @@
 namespace soccer_sim
 {
 
-TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, Qt::WindowFlags f)
+SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, Qt::WindowFlags f)
 : QFrame(parent, f)
 , frame_count_(0)
 , id_counter_(0)
@@ -88,13 +88,13 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, 
 
   meter_ = turtle_images_[0].height();
 
-  reset_srv_ = nh_->create_service<std_srvs::srv::Empty>("reset", std::bind(&TurtleFrame::resetCallback, this, std::placeholders::_1, std::placeholders::_2));
-  spawn_srv_ = nh_->create_service<soccer_sim::srv::Spawn>("spawn", std::bind(&TurtleFrame::spawnCallback, this, std::placeholders::_1, std::placeholders::_2));
-  kill_srv_ = nh_->create_service<soccer_sim::srv::Kill>("kill", std::bind(&TurtleFrame::killCallback, this, std::placeholders::_1, std::placeholders::_2));
+  reset_srv_ = nh_->create_service<std_srvs::srv::Empty>("reset", std::bind(&SimulationFrame::resetCallback, this, std::placeholders::_1, std::placeholders::_2));
+  spawn_srv_ = nh_->create_service<soccer_sim::srv::Spawn>("spawn", std::bind(&SimulationFrame::spawnCallback, this, std::placeholders::_1, std::placeholders::_2));
+  kill_srv_ = nh_->create_service<soccer_sim::srv::Kill>("kill", std::bind(&SimulationFrame::killCallback, this, std::placeholders::_1, std::placeholders::_2));
 
   rclcpp::QoS qos(rclcpp::KeepLast(100), rmw_qos_profile_sensor_data);
   parameter_event_sub_ = nh_->create_subscription<rcl_interfaces::msg::ParameterEvent>(
-    "/parameter_events", qos, std::bind(&TurtleFrame::parameterEventCallback, this, std::placeholders::_1));
+    "/parameter_events", qos, std::bind(&SimulationFrame::parameterEventCallback, this, std::placeholders::_1));
 
   RCLCPP_INFO(nh_->get_logger(), "Starting soccer_sim with node name %s", nh_->get_fully_qualified_name());
 
@@ -115,12 +115,12 @@ TurtleFrame::TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, 
   }
 }
 
-TurtleFrame::~TurtleFrame()
+SimulationFrame::~SimulationFrame()
 {
   delete update_timer_;
 }
 
-bool TurtleFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::SharedPtr req, soccer_sim::srv::Spawn::Response::SharedPtr res)
+bool SimulationFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::SharedPtr req, soccer_sim::srv::Spawn::Response::SharedPtr res)
 {
   std::string name = spawnTurtle(req->name, req->x, req->y, req->theta);
   if (name.empty())
@@ -134,7 +134,7 @@ bool TurtleFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::SharedPtr
   return true;
 }
 
-bool TurtleFrame::killCallback(const soccer_sim::srv::Kill::Request::SharedPtr req, soccer_sim::srv::Kill::Response::SharedPtr)
+bool SimulationFrame::killCallback(const soccer_sim::srv::Kill::Request::SharedPtr req, soccer_sim::srv::Kill::Response::SharedPtr)
 {
   M_Turtle::iterator it = turtles_.find(req->name);
   if (it == turtles_.end())
@@ -149,7 +149,7 @@ bool TurtleFrame::killCallback(const soccer_sim::srv::Kill::Request::SharedPtr r
   return true;
 }
 
-void TurtleFrame::parameterEventCallback(const rcl_interfaces::msg::ParameterEvent::ConstSharedPtr event)
+void SimulationFrame::parameterEventCallback(const rcl_interfaces::msg::ParameterEvent::ConstSharedPtr event)
 {
   // only consider events from this node
   if (event->node == nh_->get_fully_qualified_name())
@@ -159,17 +159,17 @@ void TurtleFrame::parameterEventCallback(const rcl_interfaces::msg::ParameterEve
   }
 }
 
-bool TurtleFrame::hasTurtle(const std::string& name)
+bool SimulationFrame::hasTurtle(const std::string& name)
 {
   return turtles_.find(name) != turtles_.end();
 }
 
-std::string TurtleFrame::spawnTurtle(const std::string& name, float x, float y, float angle)
+std::string SimulationFrame::spawnTurtle(const std::string& name, float x, float y, float angle)
 {
   return spawnTurtle(name, x, y, angle, rand() % turtle_images_.size());
 }
 
-std::string TurtleFrame::spawnTurtle(const std::string& name, float x, float y, float angle, size_t index)
+std::string SimulationFrame::spawnTurtle(const std::string& name, float x, float y, float angle, size_t index)
 {
   std::string real_name = name;
   if (real_name.empty())
@@ -198,7 +198,7 @@ std::string TurtleFrame::spawnTurtle(const std::string& name, float x, float y, 
   return real_name;
 }
 
-void TurtleFrame::onUpdate()
+void SimulationFrame::onUpdate()
 {
   if (!rclcpp::ok())
   {
@@ -211,7 +211,7 @@ void TurtleFrame::onUpdate()
   updateTurtles();
 }
 
-void TurtleFrame::paintEvent(QPaintEvent*)
+void SimulationFrame::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
 
@@ -232,7 +232,7 @@ void TurtleFrame::paintEvent(QPaintEvent*)
   }
 }
 
-void TurtleFrame::updateTurtles()
+void SimulationFrame::updateTurtles()
 {
   if (last_turtle_update_.nanoseconds() == 0)
   {
@@ -255,7 +255,7 @@ void TurtleFrame::updateTurtles()
   ++frame_count_;
 }
 
-bool TurtleFrame::resetCallback(const std_srvs::srv::Empty::Request::SharedPtr, std_srvs::srv::Empty::Response::SharedPtr)
+bool SimulationFrame::resetCallback(const std_srvs::srv::Empty::Request::SharedPtr, std_srvs::srv::Empty::Response::SharedPtr)
 {
   RCLCPP_INFO(nh_->get_logger(), "Resetting soccer_sim.");
   turtles_.clear();

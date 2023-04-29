@@ -33,10 +33,10 @@ set(dependencies "ament_index_cpp" "geometry_msgs" "rclcpp" "rclcpp_action" "std
 set(turtlesim_node_SRCS
   src/turtlesim.cpp
   src/turtle.cpp
-  src/turtle_frame.cpp
+  src/simulation_frame.cpp
 )
 set(turtlesim_node_HDRS
-  include/soccer_sim/turtle_frame.h
+  include/soccer_sim/simulation_frame.h
 )
 
 qt5_wrap_cpp(turtlesim_node_MOCS ${turtlesim_node_HDRS})

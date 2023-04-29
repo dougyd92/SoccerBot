@@ -51,12 +51,12 @@
 namespace soccer_sim
 {
 
-class TurtleFrame : public QFrame
+class SimulationFrame : public QFrame
 {
   Q_OBJECT
 public:
-  TurtleFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
-  ~TurtleFrame();
+  SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
+  ~SimulationFrame();
 
   std::string spawnTurtle(const std::string& name, float x, float y, float angle);
   std::string spawnTurtle(const std::string& name, float x, float y, float angle, size_t index);

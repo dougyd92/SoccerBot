@@ -31,7 +31,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "soccer_sim/turtle_frame.h"
+#include "soccer_sim/simulation_frame.h"
 
 class TurtleApp : public QApplication
 {
@@ -52,7 +52,7 @@ public:
 
   int exec()
   {
-    soccer_sim::TurtleFrame frame(nh_);
+    soccer_sim::SimulationFrame frame(nh_);
     frame.show();
 
     return QApplication::exec();
