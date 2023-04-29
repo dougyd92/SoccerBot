@@ -189,7 +189,7 @@ std::string SimulationFrame::spawnTurtle(const std::string& name, float x, float
     }
   }
 
-  TurtlePtr t = std::make_shared<Turtle>(nh_, real_name, turtle_images_[static_cast<int>(index)], QPointF(x, height_in_meters_ - y), angle);
+  AgentPtr t = std::make_shared<Agent>(nh_, real_name, turtle_images_[static_cast<int>(index)], QPointF(x, height_in_meters_ - y), angle);
   turtles_[real_name] = t;
   update();
 

@@ -41,7 +41,7 @@ static double normalizeAngle(double angle)
   return angle - (TWO_PI * std::floor((angle + PI) / (TWO_PI)));
 }
 
-Turtle::Turtle(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& turtle_image, const QPointF& pos, float orient)
+Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& turtle_image, const QPointF& pos, float orient)
 : nh_(nh)
 , turtle_image_(turtle_image)
 , pos_(pos)
@@ -51,9 +51,9 @@ Turtle::Turtle(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const 
 , ang_vel_(0.0)
 {
   rclcpp::QoS qos(rclcpp::KeepLast(7));
-  velocity_sub_ = nh_->create_subscription<geometry_msgs::msg::Twist>(real_name + "/cmd_vel", qos, std::bind(&Turtle::velocityCallback, this, std::placeholders::_1));
+  velocity_sub_ = nh_->create_subscription<geometry_msgs::msg::Twist>(real_name + "/cmd_vel", qos, std::bind(&Agent::velocityCallback, this, std::placeholders::_1));
   pose_pub_ = nh_->create_publisher<soccer_sim::msg::Pose>(real_name + "/pose", qos);
-  teleport_absolute_srv_ = nh_->create_service<soccer_sim::srv::TeleportAbsolute>(real_name + "/teleport_absolute", std::bind(&Turtle::teleportAbsoluteCallback, this, std::placeholders::_1, std::placeholders::_2));
+  teleport_absolute_srv_ = nh_->create_service<soccer_sim::srv::TeleportAbsolute>(real_name + "/teleport_absolute", std::bind(&Agent::teleportAbsoluteCallback, this, std::placeholders::_1, std::placeholders::_2));
 
   last_command_time_ = nh_->now();
 
@@ -61,7 +61,7 @@ Turtle::Turtle(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const 
 }
 
 
-void Turtle::velocityCallback(const geometry_msgs::msg::Twist::ConstSharedPtr vel)
+void Agent::velocityCallback(const geometry_msgs::msg::Twist::ConstSharedPtr vel)
 {
   last_command_time_ = nh_->now();
   lin_vel_x_ = vel->linear.x;
@@ -69,13 +69,13 @@ void Turtle::velocityCallback(const geometry_msgs::msg::Twist::ConstSharedPtr ve
   ang_vel_ = vel->angular.z;
 }
 
-bool Turtle::teleportAbsoluteCallback(const soccer_sim::srv::TeleportAbsolute::Request::SharedPtr req, soccer_sim::srv::TeleportAbsolute::Response::SharedPtr)
+bool Agent::teleportAbsoluteCallback(const soccer_sim::srv::TeleportAbsolute::Request::SharedPtr req, soccer_sim::srv::TeleportAbsolute::Response::SharedPtr)
 {
   teleport_requests_.push_back(TeleportRequest(req->x, req->y, req->theta));
   return true;
 }
 
-bool Turtle::update(double dt, qreal canvas_width, qreal canvas_height)
+bool Agent::update(double dt, qreal canvas_width, qreal canvas_height)
 {
   bool modified = false;
 
@@ -141,7 +141,7 @@ bool Turtle::update(double dt, qreal canvas_width, qreal canvas_height)
   return modified;
 }
 
-void Turtle::paint(QPainter& painter)
+void Agent::paint(QPainter& painter)
 {
   QPointF p = pos_ * meter_;
   p.rx() -= 0.5 * turtle_image_.width();

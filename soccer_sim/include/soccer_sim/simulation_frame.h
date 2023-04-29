@@ -90,7 +90,7 @@ private:
   rclcpp::Service<soccer_sim::srv::Kill>::SharedPtr kill_srv_;
   rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr parameter_event_sub_;
 
-  typedef std::map<std::string, TurtlePtr> M_Turtle;
+  typedef std::map<std::string, AgentPtr> M_Turtle;
   M_Turtle turtles_;
   uint32_t id_counter_;
 

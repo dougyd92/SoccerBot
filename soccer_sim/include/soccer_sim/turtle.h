@@ -50,11 +50,11 @@
 namespace soccer_sim
 {
 
-class Turtle
+class Agent
 {
 public:
 
-  Turtle(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& turtle_image, const QPointF& pos, float orient);
+  Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& turtle_image, const QPointF& pos, float orient);
 
   bool update(double dt, qreal canvas_width, qreal canvas_height);
   void paint(QPainter &painter);
@@ -94,7 +94,7 @@ private:
   typedef std::vector<TeleportRequest> V_TeleportRequest;
   V_TeleportRequest teleport_requests_;
 };
-typedef std::shared_ptr<Turtle> TurtlePtr;
+typedef std::shared_ptr<Agent> AgentPtr;
 
 }
 
