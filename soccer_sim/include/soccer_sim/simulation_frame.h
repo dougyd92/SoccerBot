@@ -58,8 +58,8 @@ public:
   SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
   ~SimulationFrame();
 
-  std::string spawnTurtle(const std::string& name, float x, float y, float angle);
-  std::string spawnTurtle(const std::string& name, float x, float y, float angle, size_t index);
+  std::string spawnAgent(const std::string& name, float x, float y, float angle);
+  std::string spawnAgent(const std::string& name, float x, float y, float angle, size_t index);
 
 protected:
   void paintEvent(QPaintEvent* event);
@@ -90,8 +90,8 @@ private:
   rclcpp::Service<soccer_sim::srv::Kill>::SharedPtr kill_srv_;
   rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr parameter_event_sub_;
 
-  typedef std::map<std::string, AgentPtr> M_Turtle;
-  M_Turtle turtles_;
+  typedef std::map<std::string, AgentPtr> M_Agent;
+  M_Agent turtles_;
   uint32_t id_counter_;
 
   QVector<QImage> turtle_images_;

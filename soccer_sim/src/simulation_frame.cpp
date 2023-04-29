@@ -100,7 +100,7 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
 
   width_in_meters_ = (width() - 1) / meter_;
   height_in_meters_ = (height() - 1) / meter_;
-  spawnTurtle("", width_in_meters_ / 2.0, height_in_meters_ / 2.0, 0);
+  spawnAgent("", width_in_meters_ / 2.0, height_in_meters_ / 2.0, 0);
 
   // spawn all available turtle types
   if(false)
@@ -110,7 +110,7 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
       QString name = turtles[index];
       name = name.split(".").first();
       name.replace(QString("-"), QString(""));
-      spawnTurtle(name.toStdString(), 1.0f + 1.5f * (index % 7), 1.0f + 1.5f * (index / 7), static_cast<float>(PI) / 2.0f, index);
+      spawnAgent(name.toStdString(), 1.0f + 1.5f * (index % 7), 1.0f + 1.5f * (index / 7), static_cast<float>(PI) / 2.0f, index);
     }
   }
 }
@@ -122,7 +122,7 @@ SimulationFrame::~SimulationFrame()
 
 bool SimulationFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::SharedPtr req, soccer_sim::srv::Spawn::Response::SharedPtr res)
 {
-  std::string name = spawnTurtle(req->name, req->x, req->y, req->theta);
+  std::string name = spawnAgent(req->name, req->x, req->y, req->theta);
   if (name.empty())
   {
     RCLCPP_ERROR(nh_->get_logger(), "A turtle named [%s] already exists", req->name.c_str());
@@ -136,7 +136,7 @@ bool SimulationFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::Share
 
 bool SimulationFrame::killCallback(const soccer_sim::srv::Kill::Request::SharedPtr req, soccer_sim::srv::Kill::Response::SharedPtr)
 {
-  M_Turtle::iterator it = turtles_.find(req->name);
+  M_Agent::iterator it = turtles_.find(req->name);
   if (it == turtles_.end())
   {
     RCLCPP_ERROR(nh_->get_logger(), "Tried to kill turtle [%s], which does not exist", req->name.c_str());
@@ -164,12 +164,12 @@ bool SimulationFrame::hasTurtle(const std::string& name)
   return turtles_.find(name) != turtles_.end();
 }
 
-std::string SimulationFrame::spawnTurtle(const std::string& name, float x, float y, float angle)
+std::string SimulationFrame::spawnAgent(const std::string& name, float x, float y, float angle)
 {
-  return spawnTurtle(name, x, y, angle, rand() % turtle_images_.size());
+  return spawnAgent(name, x, y, angle, rand() % turtle_images_.size());
 }
 
-std::string SimulationFrame::spawnTurtle(const std::string& name, float x, float y, float angle, size_t index)
+std::string SimulationFrame::spawnAgent(const std::string& name, float x, float y, float angle, size_t index)
 {
   std::string real_name = name;
   if (real_name.empty())
@@ -224,8 +224,8 @@ void SimulationFrame::paintEvent(QPaintEvent*)
   QRgb background_color = qRgb(r, g, b);
   painter.fillRect(0, 0, width(), height(), background_color);
 
-  M_Turtle::iterator it = turtles_.begin();
-  M_Turtle::iterator end = turtles_.end();
+  M_Agent::iterator it = turtles_.begin();
+  M_Agent::iterator end = turtles_.end();
   for (; it != end; ++it)
   {
     it->second->paint(painter);
@@ -241,8 +241,8 @@ void SimulationFrame::updateTurtles()
   }
 
   bool modified = false;
-  M_Turtle::iterator it = turtles_.begin();
-  M_Turtle::iterator end = turtles_.end();
+  M_Agent::iterator it = turtles_.begin();
+  M_Agent::iterator end = turtles_.end();
   for (; it != end; ++it)
   {
     modified |= it->second->update(0.001 * update_timer_->interval(), width_in_meters_, height_in_meters_);
