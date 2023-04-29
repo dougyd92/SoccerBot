@@ -9,7 +9,7 @@ class PlayerFormationController(Node):
 
     def __init__(self):
         super().__init__('player_formation_ctrl')
-        self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
+        self.publisher_ = self.create_publisher(Twist, '/agent1/cmd_vel', 10)
         timer_period = 1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
 

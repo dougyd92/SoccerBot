@@ -9,15 +9,6 @@ def generate_launch_description():
         ExecuteProcess(
           cmd=[[
             'ros2 service call ',
-            '/kill ',
-            'soccer_sim/srv/Kill ',
-            '"{name: turtle1}"',
-          ]],
-          shell=True
-        ),
-        ExecuteProcess(
-          cmd=[[
-            'ros2 service call ',
             '/spawn ',
             'soccer_sim/srv/Spawn ',
             '"{x: 1, y: 1, name: player1}"',
@@ -45,13 +36,13 @@ def generate_launch_description():
         Node(
             namespace='player1',
             package='soccerbot', executable='soccer_player', 
-            remappings=[('/turtle1/cmd_vel', '/player1/cmd_vel')]),
+            remappings=[('/agent1/cmd_vel', '/player1/cmd_vel')]),
         Node(
             namespace='player2',
             package='soccerbot', executable='soccer_player', 
-            remappings=[('/turtle1/cmd_vel', '/player2/cmd_vel')]),
+            remappings=[('/agent1/cmd_vel', '/player2/cmd_vel')]),
         Node(
             namespace='player3',
             package='soccerbot', executable='soccer_player', 
-            remappings=[('/turtle1/cmd_vel', '/player3/cmd_vel')]),
+            remappings=[('/agent1/cmd_vel', '/player3/cmd_vel')]),
     ])

@@ -100,19 +100,6 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
 
   width_in_meters_ = (width() - 1) / meter_;
   height_in_meters_ = (height() - 1) / meter_;
-  spawnAgent("", width_in_meters_ / 2.0, height_in_meters_ / 2.0, 0);
-
-  // spawn all available turtle types
-  if(false)
-  {
-    for(int index = 0; index < agents.size(); ++index)
-    {
-      QString name = agents[index];
-      name = name.split(".").first();
-      name.replace(QString("-"), QString(""));
-      spawnAgent(name.toStdString(), 1.0f + 1.5f * (index % 7), 1.0f + 1.5f * (index / 7), static_cast<float>(PI) / 2.0f, index);
-    }
-  }
 }
 
 SimulationFrame::~SimulationFrame()
@@ -125,7 +112,7 @@ bool SimulationFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::Share
   std::string name = spawnAgent(req->name, req->x, req->y, req->theta);
   if (name.empty())
   {
-    RCLCPP_ERROR(nh_->get_logger(), "A turtle named [%s] already exists", req->name.c_str());
+    RCLCPP_ERROR(nh_->get_logger(), "An agent named [%s] already exists", req->name.c_str());
     return false;
   }
 
@@ -139,7 +126,7 @@ bool SimulationFrame::killCallback(const soccer_sim::srv::Kill::Request::SharedP
   M_Agent::iterator it = agents_.find(req->name);
   if (it == agents_.end())
   {
-    RCLCPP_ERROR(nh_->get_logger(), "Tried to kill turtle [%s], which does not exist", req->name.c_str());
+    RCLCPP_ERROR(nh_->get_logger(), "Tried to kill agent [%s], which does not exist", req->name.c_str());
     return false;
   }
 
@@ -177,7 +164,7 @@ std::string SimulationFrame::spawnAgent(const std::string& name, float x, float 
     do
     {
       std::stringstream ss;
-      ss << "turtle" << ++id_counter_;
+      ss << "agent" << ++id_counter_;
       real_name = ss.str();
     } while (hasAgent(real_name));
   }
@@ -193,7 +180,7 @@ std::string SimulationFrame::spawnAgent(const std::string& name, float x, float 
   agents_[real_name] = t;
   update();
 
-  RCLCPP_INFO(nh_->get_logger(), "Spawning turtle [%s] at x=[%f], y=[%f], theta=[%f]", real_name.c_str(), x, y, angle);
+  RCLCPP_INFO(nh_->get_logger(), "Spawning agent [%s] at x=[%f], y=[%f], theta=[%f]", real_name.c_str(), x, y, angle);
 
   return real_name;
 }
@@ -208,7 +195,7 @@ void SimulationFrame::onUpdate()
 
   rclcpp::spin_some(nh_);
 
-  updateTurtles();
+  updateAgents();
 }
 
 void SimulationFrame::paintEvent(QPaintEvent*)
@@ -232,11 +219,11 @@ void SimulationFrame::paintEvent(QPaintEvent*)
   }
 }
 
-void SimulationFrame::updateTurtles()
+void SimulationFrame::updateAgents()
 {
-  if (last_turtle_update_.nanoseconds() == 0)
+  if (last_agent_update_.nanoseconds() == 0)
   {
-    last_turtle_update_ = nh_->now();
+    last_agent_update_ = nh_->now();
     return;
   }
 
@@ -260,6 +247,7 @@ bool SimulationFrame::resetCallback(const std_srvs::srv::Empty::Request::SharedP
   RCLCPP_INFO(nh_->get_logger(), "Resetting soccer_sim.");
   agents_.clear();
   id_counter_ = 0;
+  update();
   return true;
 }
 

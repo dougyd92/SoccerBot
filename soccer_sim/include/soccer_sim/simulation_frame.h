@@ -68,7 +68,7 @@ private slots:
   void onUpdate();
 
 private:
-  void updateTurtles();
+  void updateAgents();
   bool hasAgent(const std::string& name);
 
   bool resetCallback(const std_srvs::srv::Empty::Request::SharedPtr, std_srvs::srv::Empty::Response::SharedPtr);
@@ -83,7 +83,7 @@ private:
 
   uint64_t frame_count_;
 
-  rclcpp::Time last_turtle_update_;
+  rclcpp::Time last_agent_update_;
 
   rclcpp::Service<std_srvs::srv::Empty>::SharedPtr reset_srv_;
   rclcpp::Service<soccer_sim::srv::Spawn>::SharedPtr spawn_srv_;
