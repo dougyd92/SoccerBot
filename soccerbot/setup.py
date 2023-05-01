@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'soccer_player = soccerbot.soccer_player:main',
+            'distance_sensor = soccerbot.distance_sensor:main',
         ],
     },
 )

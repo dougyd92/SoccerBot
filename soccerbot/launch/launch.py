@@ -6,6 +6,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='soccer_sim', executable='soccer_sim_node'),
+        Node(
+            package='soccerbot', executable='distance_sensor'),
         ExecuteProcess(
           cmd=[[
             'ros2 service call ',
