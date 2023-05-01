@@ -25,6 +25,7 @@ setup(
         'console_scripts': [
             'formation_controller = soccerbot.formation_controller:main',
             'distance_sensor = soccerbot.distance_sensor:main',
+            'collision_detection = soccerbot.collision_detection:main',
         ],
     },
 )
