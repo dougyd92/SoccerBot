@@ -1,6 +1,6 @@
 float32 x
 float32 y
-float32 theta
+string agent_type # One of either "TEAM_A", "TEAM_B", or "BALL"
 string name # Optional.  A unique name will be created and returned if this is empty
 ---
 string name

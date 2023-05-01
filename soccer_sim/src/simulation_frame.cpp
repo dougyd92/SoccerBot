@@ -46,7 +46,7 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
 , frame_count_(0)
 , id_counter_(0)
 {
-  setFixedSize(500, 500);
+  setFixedSize(525, 340);
   setWindowTitle("Soccer Bots");
 
   srand(time(NULL));
@@ -75,18 +75,26 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
   nh_->declare_parameter("background_g", rclcpp::ParameterValue(DEFAULT_BG_G), background_g_descriptor);
   nh_->declare_parameter("background_b", rclcpp::ParameterValue(DEFAULT_BG_B), background_b_descriptor);
 
-  QVector<QString> agents;
-  agents.append("jersey_icon.png");
-
   QString images_path = (ament_index_cpp::get_package_share_directory("soccer_sim") + "/images/").c_str();
-  for (int i = 0; i < agents.size(); ++i)
+  QVector<QString> team_a_image_names;
+  QVector<QString> team_b_image_names;
+  QImage img;
+  team_a_image_names.append("jersey_A.png");
+  team_b_image_names.append("jersey_B.png");
+  for (int i = 0; i < team_a_image_names.size(); ++i)
   {
-    QImage img;
-    img.load(images_path + agents[i]);
-    agent_images_.append(img);
+    img.load(images_path + team_a_image_names[i]);
+    team_a_images_.append(img);
   }
+  for (int i = 0; i < team_b_image_names.size(); ++i)
+  {
+    img.load(images_path + team_b_image_names[i]);
+    team_b_images_.append(img);
+  }
+  img.load(images_path + "ball.png");
+  ball_image_ = img;
 
-  meter_ = agent_images_[0].height();
+  meter_ = team_a_images_[0].height();
 
   reset_srv_ = nh_->create_service<std_srvs::srv::Empty>("reset", std::bind(&SimulationFrame::resetCallback, this, std::placeholders::_1, std::placeholders::_2));
   spawn_srv_ = nh_->create_service<soccer_sim::srv::Spawn>("spawn", std::bind(&SimulationFrame::spawnCallback, this, std::placeholders::_1, std::placeholders::_2));
@@ -109,7 +117,20 @@ SimulationFrame::~SimulationFrame()
 
 bool SimulationFrame::spawnCallback(const soccer_sim::srv::Spawn::Request::SharedPtr req, soccer_sim::srv::Spawn::Response::SharedPtr res)
 {
-  std::string name = spawnAgent(req->name, req->x, req->y, req->theta);
+  int agent_type;
+  if (req->agent_type ==  "TEAM_A") 
+    agent_type = AgentType::TEAM_A;
+  else if (req->agent_type ==  "TEAM_B") 
+    agent_type = AgentType::TEAM_B;
+  else if (req->agent_type ==  "BALL") 
+    agent_type = AgentType::BALL;
+  else {
+    RCLCPP_ERROR(nh_->get_logger(), "Invalid agent_type specified: %s", req->agent_type.c_str());
+    return false;
+  }
+
+  std::string name = spawnAgent(req->name, req->x, req->y, agent_type);
+  
   if (name.empty())
   {
     RCLCPP_ERROR(nh_->get_logger(), "An agent named [%s] already exists", req->name.c_str());
@@ -151,12 +172,7 @@ bool SimulationFrame::hasAgent(const std::string& name)
   return agents_.find(name) != agents_.end();
 }
 
-std::string SimulationFrame::spawnAgent(const std::string& name, float x, float y, float angle)
-{
-  return spawnAgent(name, x, y, angle, rand() % agent_images_.size());
-}
-
-std::string SimulationFrame::spawnAgent(const std::string& name, float x, float y, float angle, size_t index)
+std::string SimulationFrame::spawnAgent(const std::string& name, float x, float y, int agent_type)
 {
   std::string real_name = name;
   if (real_name.empty())
@@ -176,11 +192,24 @@ std::string SimulationFrame::spawnAgent(const std::string& name, float x, float 
     }
   }
 
-  AgentPtr t = std::make_shared<Agent>(nh_, real_name, agent_images_[static_cast<int>(index)], QPointF(x, height_in_meters_ - y), angle);
+  QImage image;
+  switch(agent_type) {
+    case AgentType::TEAM_A:
+      image = team_a_images_[0];
+      break;
+    case AgentType::TEAM_B:
+      image = team_b_images_[0];
+      break;
+    case AgentType::BALL:
+      image = ball_image_;
+      break;
+  }
+
+  AgentPtr t = std::make_shared<Agent>(nh_, real_name, image, QPointF(x, height_in_meters_ - y));
   agents_[real_name] = t;
   update();
 
-  RCLCPP_INFO(nh_->get_logger(), "Spawning agent [%s] at x=[%f], y=[%f], theta=[%f]", real_name.c_str(), x, y, angle);
+  RCLCPP_INFO(nh_->get_logger(), "Spawning agent [%s] at x=[%f], y=[%f]", real_name.c_str(), x, y);
 
   return real_name;
 }

@@ -13,7 +13,7 @@ def generate_launch_description():
             'ros2 service call ',
             '/spawn ',
             'soccer_sim/srv/Spawn ',
-            '"{x: 1, y: 1, name: player1}"',
+            '"{x: 1, y: 1, agent_type: TEAM_A, name: player1}"',
           ]],
           shell=True
         ),
@@ -22,7 +22,7 @@ def generate_launch_description():
             'ros2 service call ',
             '/spawn ',
             'soccer_sim/srv/Spawn ',
-            '"{x: 2, y: 2, name: player2}"',
+            '"{x: 2, y: 2, agent_type: TEAM_A, name: player2}"',
           ]],
           shell=True
         ),
@@ -31,7 +31,16 @@ def generate_launch_description():
             'ros2 service call ',
             '/spawn ',
             'soccer_sim/srv/Spawn ',
-            '"{x: 3, y: 3, name: player3}"',
+            '"{x: 3, y: 3, agent_type: TEAM_B, name: player3}"',
+          ]],
+          shell=True
+        ),
+        ExecuteProcess(
+          cmd=[[
+            'ros2 service call ',
+            '/spawn ',
+            'soccer_sim/srv/Spawn ',
+            '"{x: 5, y: 5, agent_type: BALL, name: ball}"',
           ]],
           shell=True
         ),

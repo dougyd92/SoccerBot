@@ -51,6 +51,12 @@
 namespace soccer_sim
 {
 
+enum AgentType {
+  TEAM_A,
+  TEAM_B,
+  BALL
+};
+
 class SimulationFrame : public QFrame
 {
   Q_OBJECT
@@ -58,8 +64,7 @@ public:
   SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
   ~SimulationFrame();
 
-  std::string spawnAgent(const std::string& name, float x, float y, float angle);
-  std::string spawnAgent(const std::string& name, float x, float y, float angle, size_t index);
+  std::string spawnAgent(const std::string& name, float x, float y, int agent_type);
 
 protected:
   void paintEvent(QPaintEvent* event);
@@ -94,7 +99,9 @@ private:
   M_Agent agents_;
   uint32_t id_counter_;
 
-  QVector<QImage> agent_images_;
+  QVector<QImage> team_a_images_;
+  QVector<QImage> team_b_images_;
+  QImage ball_image_;
 
   float meter_;
   float width_in_meters_;

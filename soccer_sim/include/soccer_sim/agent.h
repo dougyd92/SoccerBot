@@ -54,7 +54,7 @@ class Agent
 {
 public:
 
-  Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& agent_image_, const QPointF& pos, float orient);
+  Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& agent_image_, const QPointF& pos);
 
   bool update(double dt, qreal canvas_width, qreal canvas_height);
   void paint(QPainter &painter);
@@ -68,7 +68,7 @@ private:
 
   QPointF pos_;
   qreal orient_;
-
+  
   qreal lin_vel_x_;
   qreal lin_vel_y_;
   qreal ang_vel_;

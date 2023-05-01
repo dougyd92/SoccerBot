@@ -41,11 +41,11 @@ static double normalizeAngle(double angle)
   return angle - (TWO_PI * std::floor((angle + PI) / (TWO_PI)));
 }
 
-Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& agent_image, const QPointF& pos, float orient)
+Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& agent_image, const QPointF& pos)
 : nh_(nh)
 , agent_image_(agent_image)
 , pos_(pos)
-, orient_(orient)
+, orient_(0.0)
 , lin_vel_x_(0.0)
 , lin_vel_y_(0.0)
 , ang_vel_(0.0)
