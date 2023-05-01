@@ -32,13 +32,13 @@ class PlayerFormationController(Node):
         # Placeholder
         direction = randint(1,4)
         if direction == 1:
-            velocity.linear.x = 1.0
+            velocity.linear.x = 4.0
         elif direction == 2:
-            velocity.linear.x = -1.0
+            velocity.linear.x = -4.0
         elif direction == 3:
-            velocity.linear.y = 1.0
+            velocity.linear.y = 4.0
         elif direction == 4:
-            velocity.linear.y = -1.0
+            velocity.linear.y = -4.0
 
         self.publisher_.publish(velocity)
 

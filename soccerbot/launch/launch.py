@@ -1,5 +1,7 @@
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess
+from launch.actions import ExecuteProcess, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import ThisLaunchFileDir
 from launch_ros.actions import Node
 
 def generate_launch_description():
@@ -13,47 +15,56 @@ def generate_launch_description():
             'ros2 service call ',
             '/spawn ',
             'soccer_sim/srv/Spawn ',
-            '"{x: 1, y: 1, agent_type: TEAM_A, name: player1}"',
-          ]],
-          shell=True
-        ),
-        ExecuteProcess(
-          cmd=[[
-            'ros2 service call ',
-            '/spawn ',
-            'soccer_sim/srv/Spawn ',
-            '"{x: 2, y: 2, agent_type: TEAM_A, name: player2}"',
-          ]],
-          shell=True
-        ),
-        ExecuteProcess(
-          cmd=[[
-            'ros2 service call ',
-            '/spawn ',
-            'soccer_sim/srv/Spawn ',
-            '"{x: 3, y: 3, agent_type: TEAM_B, name: player3}"',
-          ]],
-          shell=True
-        ),
-        ExecuteProcess(
-          cmd=[[
-            'ros2 service call ',
-            '/spawn ',
-            'soccer_sim/srv/Spawn ',
             '"{x: 34, y: 52.5, agent_type: BALL, name: ball}"',
           ]],
           shell=True
         ),
-        Node(
-            namespace='player1',
-            package='soccerbot', executable='formation_controller', 
-            remappings=[('/agent1/cmd_vel', '/player1/cmd_vel')]),
-        Node(
-            namespace='player2',
-            package='soccerbot', executable='formation_controller', 
-            remappings=[('/agent1/cmd_vel', '/player2/cmd_vel')]),
-        Node(
-            namespace='player3',
-            package='soccerbot', executable='formation_controller', 
-            remappings=[('/agent1/cmd_vel', '/player3/cmd_vel')]),
+        IncludeLaunchDescription(
+          PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/single_agent_launch.py']),
+          launch_arguments={
+              'agent_type': 'TEAM_A',
+              'agent_name': 'player_A1',
+              'spawn_position': 'x: 16, y: 10'
+          }.items()
+        ),
+        IncludeLaunchDescription(
+          PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/single_agent_launch.py']),
+          launch_arguments={
+              'agent_type': 'TEAM_A',
+              'agent_name': 'player_A2',
+              'spawn_position': 'x: 32, y: 10'
+          }.items()
+        ),
+        IncludeLaunchDescription(
+          PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/single_agent_launch.py']),
+          launch_arguments={
+              'agent_type': 'TEAM_A',
+              'agent_name': 'player_A3',
+              'spawn_position': 'x: 48, y: 10'
+          }.items()
+        ),
+        IncludeLaunchDescription(
+          PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/single_agent_launch.py']),
+          launch_arguments={
+              'agent_type': 'TEAM_B',
+              'agent_name': 'player_B1',
+              'spawn_position': 'x: 16, y: 95'
+          }.items()
+        ),
+        IncludeLaunchDescription(
+          PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/single_agent_launch.py']),
+          launch_arguments={
+              'agent_type': 'TEAM_B',
+              'agent_name': 'player_B2',
+              'spawn_position': 'x: 32, y: 95'
+          }.items()
+        ),
+        IncludeLaunchDescription(
+          PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/single_agent_launch.py']),
+          launch_arguments={
+              'agent_type': 'TEAM_B',
+              'agent_name': 'player_B3',
+              'spawn_position': 'x: 48, y: 95'
+          }.items()
+        )   
     ])
