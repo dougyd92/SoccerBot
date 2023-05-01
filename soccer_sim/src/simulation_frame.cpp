@@ -42,6 +42,12 @@
 namespace soccer_sim
 {
 
+/*
+  Node for the simulation environment.
+  This is essentially turtlesim_node, albeit heavily modified.
+  Contains all the agents, which each have a /pose and /cmd_vel topic
+  Updates the positions of each agent at each time step and renders them.
+*/
 SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* parent, Qt::WindowFlags f)
 : QFrame(parent, f)
 , frame_count_(0)

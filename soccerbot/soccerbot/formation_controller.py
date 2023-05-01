@@ -9,6 +9,10 @@ from random import randint
 
 from soccerbot_interfaces.srv import DistanceReq
 
+"""
+    Controller for soccer player bots.
+    Implements a decentralized formation control algorithm.
+"""
 class PlayerFormationController(Node):
 
     def __init__(self):

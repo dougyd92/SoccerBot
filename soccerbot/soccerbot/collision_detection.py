@@ -13,6 +13,9 @@ agents = [
     'ball'
 ]
 
+"""
+    Detects collisions and updates the ball's velocity accordingly.
+"""
 class CollisionDetection(Node):
     def __init__(self):
         super().__init__('collision_detection')
@@ -22,9 +25,10 @@ class CollisionDetection(Node):
 
     def pose_sub_callback(self, msg):
         # TODO:
-        # Keep track of all positions, and see if the ball collides with a player
-        # If it does, 'bounce' the ball by setting its velocity
-        # Might also check if the ball goes into the goal 
+        # Keep track of all positions, and see if the ball collides with a player.
+        # If it does, 'bounce' the ball by setting its velocity.
+        # Might also bounce the ball off the walls.
+        # Might also check if the ball goes into the goal.
         return
 
 def main():

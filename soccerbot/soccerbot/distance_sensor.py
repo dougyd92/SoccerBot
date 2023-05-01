@@ -14,6 +14,10 @@ agents = [
     'ball'
 ]
 
+"""
+    Service to get the distance between two agents (players and/or ball).
+    Subscribes to all /pose topics.
+"""
 class DistanceSensor(Node):
     def __init__(self):
         super().__init__('distance_sensor')
