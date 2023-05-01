@@ -44,6 +44,7 @@ static double normalizeAngle(double angle)
 
 Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QImage& agent_image, const QPointF& pos)
 : nh_(nh)
+, agent_name(real_name)
 , agent_image_(agent_image)
 , pos_(pos)
 , orient_(0.0)
@@ -125,7 +126,7 @@ bool Agent::update(double dt, qreal canvas_width, qreal canvas_height)
   auto p = std::make_unique<soccer_sim::msg::Pose>();
   p->x = pos_.x();
   p->y = canvas_height - pos_.y();
-  p->theta = orient_;
+  p->name = agent_name;
   p->linear_velocity = std::sqrt(lin_vel_x_ * lin_vel_x_ + lin_vel_y_ * lin_vel_y_);
   p->angular_velocity = ang_vel_;
   pose_pub_->publish(std::move(p));

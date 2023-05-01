@@ -64,6 +64,7 @@ private:
 
   rclcpp::Node::SharedPtr nh_;
 
+  std::string agent_name;
   QImage agent_image_;
 
   QPointF pos_;
