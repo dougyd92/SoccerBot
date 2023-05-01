@@ -28,6 +28,7 @@
  */
 
 #include "soccer_sim/simulation_frame.h"
+#include "soccer_sim/constants.h"
 
 #include <QPointF>
 
@@ -46,7 +47,7 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
 , frame_count_(0)
 , id_counter_(0)
 {
-  setFixedSize(525, 340);
+  setFixedSize(68*METERS_TO_PX, 105*METERS_TO_PX);
   setWindowTitle("Soccer Bots");
 
   srand(time(NULL));
@@ -94,8 +95,6 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
   img.load(images_path + "ball.png");
   ball_image_ = img;
 
-  meter_ = team_a_images_[0].height();
-
   reset_srv_ = nh_->create_service<std_srvs::srv::Empty>("reset", std::bind(&SimulationFrame::resetCallback, this, std::placeholders::_1, std::placeholders::_2));
   spawn_srv_ = nh_->create_service<soccer_sim::srv::Spawn>("spawn", std::bind(&SimulationFrame::spawnCallback, this, std::placeholders::_1, std::placeholders::_2));
   kill_srv_ = nh_->create_service<soccer_sim::srv::Kill>("kill", std::bind(&SimulationFrame::killCallback, this, std::placeholders::_1, std::placeholders::_2));
@@ -106,8 +105,8 @@ SimulationFrame::SimulationFrame(rclcpp::Node::SharedPtr& node_handle, QWidget* 
 
   RCLCPP_INFO(nh_->get_logger(), "Starting soccer_sim with node name %s", nh_->get_fully_qualified_name());
 
-  width_in_meters_ = (width() - 1) / meter_;
-  height_in_meters_ = (height() - 1) / meter_;
+  width_in_meters_ = (width() - 1) / METERS_TO_PX;
+  height_in_meters_ = (height() - 1) / METERS_TO_PX;
 }
 
 SimulationFrame::~SimulationFrame()

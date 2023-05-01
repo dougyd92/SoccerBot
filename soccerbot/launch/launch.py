@@ -40,7 +40,7 @@ def generate_launch_description():
             'ros2 service call ',
             '/spawn ',
             'soccer_sim/srv/Spawn ',
-            '"{x: 5, y: 5, agent_type: BALL, name: ball}"',
+            '"{x: 34, y: 52.5, agent_type: BALL, name: ball}"',
           ]],
           shell=True
         ),

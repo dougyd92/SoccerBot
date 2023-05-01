@@ -28,6 +28,7 @@
  */
 
 #include "soccer_sim/agent.h"
+#include "soccer_sim/constants.h"
 
 #include <math.h>
 
@@ -56,8 +57,6 @@ Agent::Agent(rclcpp::Node::SharedPtr& nh, const std::string& real_name, const QI
   teleport_absolute_srv_ = nh_->create_service<soccer_sim::srv::TeleportAbsolute>(real_name + "/teleport_absolute", std::bind(&Agent::teleportAbsoluteCallback, this, std::placeholders::_1, std::placeholders::_2));
 
   last_command_time_ = nh_->now();
-
-  meter_ = agent_image_.height();
 }
 
 
@@ -143,7 +142,7 @@ bool Agent::update(double dt, qreal canvas_width, qreal canvas_height)
 
 void Agent::paint(QPainter& painter)
 {
-  QPointF p = pos_ * meter_;
+  QPointF p = pos_ * METERS_TO_PX;
   p.rx() -= 0.5 * agent_image_.width();
   p.ry() -= 0.5 * agent_image_.height();
   painter.drawImage(p, agent_image_);

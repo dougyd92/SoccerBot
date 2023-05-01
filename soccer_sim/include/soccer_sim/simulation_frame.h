@@ -51,12 +51,6 @@
 namespace soccer_sim
 {
 
-enum AgentType {
-  TEAM_A,
-  TEAM_B,
-  BALL
-};
-
 class SimulationFrame : public QFrame
 {
   Q_OBJECT
@@ -103,7 +97,6 @@ private:
   QVector<QImage> team_b_images_;
   QImage ball_image_;
 
-  float meter_;
   float width_in_meters_;
   float height_in_meters_;
 };

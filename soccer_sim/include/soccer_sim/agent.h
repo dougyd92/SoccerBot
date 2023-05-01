@@ -68,7 +68,7 @@ private:
 
   QPointF pos_;
   qreal orient_;
-  
+
   qreal lin_vel_x_;
   qreal lin_vel_y_;
   qreal ang_vel_;
@@ -78,8 +78,6 @@ private:
   rclcpp::Service<soccer_sim::srv::TeleportAbsolute>::SharedPtr teleport_absolute_srv_;
 
   rclcpp::Time last_command_time_;
-
-  float meter_;
 
   struct TeleportRequest
   {
