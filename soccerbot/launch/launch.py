@@ -37,14 +37,14 @@ def generate_launch_description():
         ),
         Node(
             namespace='player1',
-            package='soccerbot', executable='soccer_player', 
+            package='soccerbot', executable='formation_controller', 
             remappings=[('/agent1/cmd_vel', '/player1/cmd_vel')]),
         Node(
             namespace='player2',
-            package='soccerbot', executable='soccer_player', 
+            package='soccerbot', executable='formation_controller', 
             remappings=[('/agent1/cmd_vel', '/player2/cmd_vel')]),
         Node(
             namespace='player3',
-            package='soccerbot', executable='soccer_player', 
+            package='soccerbot', executable='formation_controller', 
             remappings=[('/agent1/cmd_vel', '/player3/cmd_vel')]),
     ])

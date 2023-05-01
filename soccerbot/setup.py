@@ -23,7 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'soccer_player = soccerbot.soccer_player:main',
+            'formation_controller = soccerbot.formation_controller:main',
             'distance_sensor = soccerbot.distance_sensor:main',
         ],
     },
