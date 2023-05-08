@@ -1,3 +1,9 @@
+% Swarm Robotics, Spring 2023
+% Doug de Jesus
+% drd8913@nyu.edu
+% N14928011
+
+
 Nodes:
   soccer_sim: Node for the simulation environment. A heavily modified turtlesim_node.
     Services:
